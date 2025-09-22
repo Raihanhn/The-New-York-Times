@@ -4,7 +4,8 @@ const ArticleSchema = new mongoose.Schema({
   title: String,
   slug: { type: String, unique: true },
   content: String,
-  premium: { type: Boolean, default: false }, // free vs paid
+  author: String,
+  isPremium: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 

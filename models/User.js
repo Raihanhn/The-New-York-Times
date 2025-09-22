@@ -4,8 +4,8 @@ const UserSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   image: String,
-  subscriptionTier: { type: String, default: "free" },
-  subscriptionActive: { type: Boolean, default: false },
+  subscriptionStatus: { type: String, default: "free" }, // free / active
+  createdAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);
