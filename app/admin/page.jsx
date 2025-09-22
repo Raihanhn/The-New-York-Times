@@ -6,6 +6,7 @@ export default function AdminPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [premium, setPremium] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   // Fetch all articles
   const fetchArticles = async () => {
@@ -18,19 +19,24 @@ export default function AdminPage() {
     fetchArticles();
   }, []);
 
-  // Create article
-  const handleCreate = async () => {
-    const res = await fetch("/api/articles", {
-      method: "POST",
+  // Create or update article
+  const handleSubmit = async () => {
+    const method = editingId ? "PUT" : "POST";
+    const url = editingId ? `/api/articles/${editingId}` : "/api/articles";
+
+    const res = await fetch(url, {
+      method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, content, premium }),
     });
+
     if (res.ok) {
-      alert("Article created!");
+      alert(editingId ? "Article updated!" : "Article created!");
       setTitle("");
       setContent("");
       setPremium(false);
-      fetchArticles(); // Refresh list
+      setEditingId(null);
+      fetchArticles();
     }
   };
 
@@ -41,13 +47,23 @@ export default function AdminPage() {
     if (res.ok) fetchArticles();
   };
 
+  // Edit article
+  const handleEdit = (article) => {
+    setTitle(article.title);
+    setContent(article.content);
+    setPremium(article.premium);
+    setEditingId(article._id);
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
 
-      {/* Create Article Form */}
+      {/* Create/Edit Article Form */}
       <div className="mb-6 p-4 border rounded shadow">
-        <h2 className="text-xl font-semibold mb-2">Create Article</h2>
+        <h2 className="text-xl font-semibold mb-2">
+          {editingId ? "Edit Article" : "Create Article"}
+        </h2>
         <input
           className="border p-2 w-full mb-2"
           placeholder="Title"
@@ -69,10 +85,10 @@ export default function AdminPage() {
           Premium Article
         </label>
         <button
-          onClick={handleCreate}
+          onClick={handleSubmit}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
         >
-          Publish
+          {editingId ? "Update Article" : "Publish"}
         </button>
       </div>
 
@@ -90,7 +106,12 @@ export default function AdminPage() {
               {a.premium && <span className="text-red-600 text-sm">Premium</span>}
             </div>
             <div className="flex gap-2">
-              {/* Optional: implement edit later */}
+              <button
+                onClick={() => handleEdit(a)}
+                className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
+              >
+                Edit
+              </button>
               <button
                 onClick={() => handleDelete(a._id)}
                 className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
