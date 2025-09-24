@@ -11,9 +11,9 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     try {
-      const { title, content, premium } = req.body;
+      const { title, content,  isPremium } = req.body;
       const slug = title.toLowerCase().replace(/ /g, "-");
-      const article = await Article.create({ title, content, premium, slug });
+      const article = await Article.create({ title, content,  isPremium, slug });
       return res.status(201).json(article);
     } catch (err) {
       return res.status(400).json({ error: err.message });

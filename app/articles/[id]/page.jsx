@@ -3,7 +3,7 @@ import Article from "../../../models/Article";
 import PaywallCTA from "../../../components/PaywallCTA";
 import { isValidObjectId } from "mongoose";
 
-// Optional: pre-generate static params
+// ✅ Pre-generate static params
 export async function generateStaticParams() {
   await dbConnect();
   const articles = await Article.find({}).lean();
@@ -12,10 +12,8 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ Next 15 App Router: await route params properly
-export default async function ArticlePage(props) {
-  const params = await props.params; // ⚠️ await params here
-  const id = params.id;
+export default async function ArticlePage({ params }) {
+  const { id } = params;
 
   if (!isValidObjectId(id)) return <p>Invalid Article ID</p>;
 
@@ -24,6 +22,7 @@ export default async function ArticlePage(props) {
 
   if (!article) return <p>Article not found</p>;
 
+  // TODO: Replace this with real user subscription status from DB/session
   const user = { subscriptionStatus: "free" };
 
   return (
@@ -32,7 +31,7 @@ export default async function ArticlePage(props) {
       {article.isPremium && user.subscriptionStatus !== "active" ? (
         <PaywallCTA />
       ) : (
-        <p>{article.content}</p>
+        <p>{article.content}</p>  
       )}
     </div>
   );

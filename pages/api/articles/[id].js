@@ -7,11 +7,11 @@ export default async function handler(req, res) {
 
   if (req.method === "PUT") {
     try {
-      const { title, content, premium } = req.body;
+      const { title, content, isPremium } = req.body;
       const slug = title.toLowerCase().replace(/ /g, "-");
       const article = await Article.findByIdAndUpdate(
         id,
-        { title, content, premium, slug },
+        { title, content, isPremium, slug },
         { new: true }
       );
       return res.status(200).json(article);
