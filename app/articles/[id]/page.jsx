@@ -13,7 +13,8 @@ export async function generateStaticParams() {
 }
 
 export default async function ArticlePage({ params }) {
-  const { id } = params;
+  // ✅ params is async → must await
+  const { id } = await params;
 
   if (!isValidObjectId(id)) return <p>Invalid Article ID</p>;
 
@@ -26,12 +27,12 @@ export default async function ArticlePage({ params }) {
   const user = { subscriptionStatus: "free" };
 
   return (
-    <div>
-      <h2>{article.title}</h2>
+    <div className="max-w-3xl mx-auto py-6">
+      <h2 className="text-3xl font-bold mb-4">{article.title}</h2>
       {article.isPremium && user.subscriptionStatus !== "active" ? (
         <PaywallCTA />
       ) : (
-        <p>{article.content}</p>  
+        <p className="leading-relaxed text-lg">{article.content}</p>
       )}
     </div>
   );
