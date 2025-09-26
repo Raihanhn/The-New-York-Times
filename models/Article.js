@@ -6,6 +6,7 @@ const ArticleSchema = new mongoose.Schema({
   content: String,
   author: String,
   isPremium: { type: Boolean, default: false },
+  image: String, // ✅ new field
   createdAt: { type: Date, default: Date.now },
 });
 
