@@ -4,9 +4,10 @@ const UserSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   image: String,
-  subscriptionStatus: { type: String, default: "free" }, // free / active
-  isAdmin: { type: Boolean, default: false }, // ✅ new
+  googleId: { type: String, unique: true }, // <-- ADD THIS
+  subscriptionStatus: { type: String, default: "free" },
+  isAdmin: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.User || mongoose.model("User", UserSchema);   
+export default mongoose.models.User || mongoose.model("User", UserSchema);

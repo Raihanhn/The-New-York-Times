@@ -13,22 +13,49 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const links = ["Home", "Articles", "Account", "Admin"];
+  const baseLinks = ["Home", "Articles", "Account"];
+  const links = user?.isAdmin ? [...baseLinks, "Admin"] : baseLinks;
+
+  // useEffect(() => {
+  //   if (session) {
+  //     setUser({
+  //       name: session.user.name,
+  //       email: session.user.email,
+  //       image: session.user.image,
+  //       subscriptionStatus: "free", // Replace with DB lookup later
+  //       isAdmin: session.user.isAdmin || false, 
+  //     });
+  //     setLoading(false);
+  //   } else {
+  //     setUser(null); 
+  //     setLoading(false);
+  //   }
+  // }, [session, setUser]);
 
   useEffect(() => {
-    if (session) {
-      setUser({
-        name: session.user.name,
-        email: session.user.email,
-        image: session.user.image,
-        subscriptionStatus: "free", // Replace with DB lookup later
-      });
-      setLoading(false);
+  const fetchUser = async () => {
+    if (session?.user?.email) {
+      try {
+        const res = await fetch(`/api/users/${session.user.email}`);
+        const dbUser = await res.json();
+        if (!dbUser.error) {
+          setUser(dbUser); // update Zustand with DB user (isAdmin included)
+        } else {
+          setUser(null); 
+        }
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+        setUser(null);
+      }
     } else {
       setUser(null);
-      setLoading(false);
     }
-  }, [session, setUser]);
+    setLoading(false);
+  };
+
+  fetchUser();
+}, [session, setUser]);
+
 
   async function handleSubscribe() {
     if (!session?.user?.email) {
