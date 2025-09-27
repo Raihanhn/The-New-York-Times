@@ -8,9 +8,16 @@ export default NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        authorization: {
+        params: {
+          prompt: "select_account", // <- forces account chooser
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, 
   session: {
     strategy: "jwt",
   },

@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.hover-underline-link:hover span {
+  width: 100%;
+}

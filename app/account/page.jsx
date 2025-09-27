@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react"; // ⬅️ add signOut here
 import { useEffect, useState } from "react";
 import useUserStore from "../../stores/useUserStore";
 
@@ -56,7 +56,7 @@ export default function AccountPage() {
   if (!session) return <p>Please log in to view your account.</p>;
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
+    <div style={{ maxWidth: "800px", margin: "0 auto" }}>
       <h2>Account Info</h2>
       <img
         src={user?.image}
@@ -82,6 +82,21 @@ export default function AccountPage() {
           Subscribe Now
         </button>
       )}
+
+      {/* 🚀 Logout button */}
+      <button
+        style={{
+          padding: "10px 20px",
+          background: "#e63946",
+          color: "#fff",
+          border: "none",
+          cursor: "pointer",
+          marginTop: "15px",
+        }}
+        onClick={() => signOut({ callbackUrl: "/" })} // Redirect to homepage after logout
+      >
+        Logout
+      </button> 
     </div>
   );
 }
