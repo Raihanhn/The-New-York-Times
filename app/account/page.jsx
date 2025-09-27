@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react"; // ⬅️ add signOut here
+import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import useUserStore from "../../stores/useUserStore";
 
@@ -9,19 +9,25 @@ export default function AccountPage() {
   const { user, setUser } = useUserStore();
   const [loading, setLoading] = useState(true);
 
+  // Fetch user from backend when session exists
   useEffect(() => {
-    if (session) {
-      setUser({
-        name: session.user.name,
-        email: session.user.email,
-        image: session.user.image,
-        subscriptionStatus: "free", // Update from DB later if needed
-      });
-      setLoading(false);
-    } else {
-      setUser(null);
-      setLoading(false);
-    }
+    const fetchUser = async () => {
+      if (session?.user?.email) {
+        try {
+          const res = await fetch(`/api/users/${session.user.email}`);
+          const dbUser = await res.json();
+          setUser(dbUser);
+        } catch (err) {
+          console.error("Failed to fetch user:", err);
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
+      setLoading(false); // ✅ stop loading after fetch
+    };
+
+    fetchUser();
   }, [session, setUser]);
 
   async function handleSubscribe() {
@@ -83,7 +89,6 @@ export default function AccountPage() {
         </button>
       )}
 
-      {/* 🚀 Logout button */}
       <button
         style={{
           padding: "10px 20px",
@@ -93,10 +98,10 @@ export default function AccountPage() {
           cursor: "pointer",
           marginTop: "15px",
         }}
-        onClick={() => signOut({ callbackUrl: "/" })} // Redirect to homepage after logout
+        onClick={() => signOut({ callbackUrl: "/" })}
       >
         Logout
-      </button> 
+      </button>
     </div>
   );
 }
