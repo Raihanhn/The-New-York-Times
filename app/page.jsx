@@ -2,6 +2,7 @@ import dbConnect from "../lib/dbConnect";
 import Article from "../models/Article";
 import ArticleCard from "../components/ArticleCard";
 import StockTicker from "@/components/StockTicker";
+import TopicsSection from "@/components/TopicsSection";
 
 export default async function HomePage() {
   // Connect to MongoDB
@@ -18,6 +19,9 @@ export default async function HomePage() {
        <div className="mx-[-20px] my-[-20px]">
         <StockTicker />
       </div>
+       <div className="">
+        <TopicsSection/> 
+       </div>
       <h2>Welcome to NYT Clone</h2>
       <p>Your go-to place for articles and subscriptions!</p>
 
