@@ -19,7 +19,7 @@ export default async function HomePage() {
        <div className="mx-[-20px] my-[-20px]">
         <StockTicker />
       </div>
-       <div className="">
+       <div className="mt-10">
         <TopicsSection/> 
        </div>
       <h2>Welcome to NYT Clone</h2>
