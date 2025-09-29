@@ -20,7 +20,7 @@ export default function SportsPage() {
           <Image
             src="/images/sports-hero.jpg" // put your image in public/images
             alt="Main Sports Highlight"
-            fill  
+            fill
             className="object-cover rounded-md"
           />
         </div>
@@ -90,6 +90,57 @@ export default function SportsPage() {
           <p className="text-gray-700 text-sm leading-relaxed">
             In a shocking turn of events, the defending champions were knocked
             out early after a stunning performance by the underdogs.
+          </p>
+        </article>
+
+        <article className="border-t pt-4">
+          <Image
+            src="/images/football.jpg"
+            alt="Football"
+            width={400}
+            height={250}
+            className="w-full h-48 object-cover rounded-md mb-3"
+          />
+          <h3 className="text-lg font-semibold mb-2">
+            Football Legend Announces Retirement
+          </h3>
+          <p className="text-gray-700 text-sm leading-relaxed">
+            After two decades of brilliance, the football legend has announced
+            his retirement, leaving behind a legacy that inspired millions.
+          </p>
+        </article>
+
+        <article className="border-t pt-4">
+          <Image
+            src="/images/swimming.jpg"
+            alt="Swimming"
+            width={400}
+            height={250}
+            className="w-full h-48 object-cover rounded-md mb-3"
+          />
+          <h3 className="text-lg font-semibold mb-2">
+            Record Broken at World Swimming Championship
+          </h3>
+          <p className="text-gray-700 text-sm leading-relaxed">
+            A breathtaking performance saw a new world record set in the 200m
+            freestyle, leaving the crowd stunned.
+          </p>
+        </article>
+
+        <article className="border-t pt-4"> 
+          <Image
+            src="/images/olympics.jpg"
+            alt="Olympics"
+            width={400}
+            height={250}
+            className="w-full h-48 object-cover rounded-md mb-3"
+          />
+          <h3 className="text-lg font-semibold mb-2">
+            Countdown Begins for Paris Olympics
+          </h3>
+          <p className="text-gray-700 text-sm leading-relaxed">
+            With just 100 days left until the Paris Olympics, athletes worldwide
+            are stepping up their preparations for the grand stage.
           </p>
         </article>
       </section>
