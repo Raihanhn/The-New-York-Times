@@ -100,6 +100,61 @@ export default function PoliticsPage() {
             security concerns.
           </p>
         </article>
+
+      
+        <article className="border-t pt-4">
+          <Image
+            src="/images/policy-reform.jpg" 
+            alt="Policy Reform"
+            width={400}
+            height={250}
+            className="w-full h-48 object-cover rounded-md mb-3"
+          />
+          <h3 className="text-lg font-semibold mb-2">
+            Government Unveils New Education Policy
+          </h3>
+          <p className="text-gray-700 text-sm leading-relaxed">
+            The administration announced sweeping reforms to improve public
+            schools, with plans to increase funding and expand digital learning
+            programs nationwide.
+          </p>
+        </article>
+
+      
+        <article className="border-t pt-4">
+          <Image
+            src="/images/healthcare.jpg"
+            alt="Healthcare"
+            width={400}
+            height={250}
+            className="w-full h-48 object-cover rounded-md mb-3"
+          />
+          <h3 className="text-lg font-semibold mb-2">
+            Parliament Debates Universal Healthcare Bill
+          </h3>
+          <p className="text-gray-700 text-sm leading-relaxed">
+            Heated discussions erupted in parliament as lawmakers argued over a
+            bill proposing free healthcare coverage for all citizens.
+          </p>
+        </article>
+
+        
+        <article className="border-t pt-4">
+          <Image
+            src="/images/trade-summit.jpg"
+            alt="Trade Summit"
+            width={400}
+            height={250}
+            className="w-full h-48 object-cover rounded-md mb-3"
+          />
+          <h3 className="text-lg font-semibold mb-2">
+            Leaders Gather for Global Trade Summit
+          </h3>
+          <p className="text-gray-700 text-sm leading-relaxed">
+            Representatives from over 50 countries met to negotiate new trade
+            deals, aiming to boost economic growth and reduce tariffs.
+          </p>
+        </article>
       </section>
 
       {/* Bottom Section */}
