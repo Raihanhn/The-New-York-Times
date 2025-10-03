@@ -27,46 +27,91 @@ const StockTicker = () => {
   const loopedStocks = [...stocks, ...stocks];
 
   return (
-    <div className=" left-0 right-0 bg-white shadow-md overflow-hidden">
-      <div className="relative flex items-center h-12">
-        <div className="absolute left-0 h-full bg-red-600 text-white font-bold px-6 flex items-center z-20">
-         Live Stocks
-        </div>
-        <ul className="flex animate-marquee space-x-8 pl-40">
-          {loopedStocks.map((stock, index) => (
-            <li
-              key={index}
-              className="flex items-center space-x-2 text-gray-800 whitespace-nowrap"
-            >
-              <span className="font-semibold">{stock.symbol}</span>
-              <span>${stock.price.toFixed(2)}</span>
-              <span
-                className={`flex items-center ${
-                  stock.change >= 0 ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {stock.change >= 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
-                {Math.abs(stock.change)}%
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
+    // <div className=" left-0 right-0 bg-white shadow-md overflow-hidden">
+    //   <div className="relative flex items-center h-12">
+    //     <div className="absolute left-0 h-full bg-red-600 text-white font-bold px-6 flex items-center z-20">
+    //      Live Stocks
+    //     </div>
+    //     <ul className="flex animate-marquee space-x-8 pl-40">
+    //       {loopedStocks.map((stock, index) => (
+    //         <li
+    //           key={index}
+    //           className="flex items-center space-x-2 text-gray-800 whitespace-nowrap"
+    //         >
+    //           <span className="font-semibold">{stock.symbol}</span>
+    //           <span>${stock.price.toFixed(2)}</span>
+    //           <span
+    //             className={`flex items-center ${
+    //               stock.change >= 0 ? "text-green-600" : "text-red-600"
+    //             }`}
+    //           >
+    //             {stock.change >= 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+    //             {Math.abs(stock.change)}%
+    //           </span>
+    //         </li>
+    //       ))}
+    //     </ul>
+    //   </div>
 
-      {/* Tailwind animation */}
-      <style>
-        {`
-          @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-marquee {
-            animation: marquee 60s linear infinite;
-          }
-        `}
-      </style>
+    //   {/* Tailwind animation */}
+    //   <style>
+    //     {`
+    //       @keyframes marquee {
+    //         0% { transform: translateX(0%); }
+    //         100% { transform: translateX(-50%); }
+    //       }
+    //       .animate-marquee {
+    //         animation: marquee 60s linear infinite;
+    //       }
+    //     `}
+    //   </style>
+    // </div>
+
+  <div className=" pl-7 pr-7 mt-2 ">
+      <div className="left-0 right-0 bg-white shadow-md overflow-hidden rounded-md ">
+  <div className="relative flex items-center h-10"> 
+    <div className="absolute left-0 h-full bg-red-600 text-white font-bold px-4 flex items-center z-20 text-sm">
+      Live Stocks
     </div>
+    <ul className="flex animate-marquee space-x-6 pl-28 text-sm"> 
+      {loopedStocks.map((stock, index) => (
+        <li
+          key={index}
+          className="flex items-center space-x-1 whitespace-nowrap" 
+        >
+          <span className="font-semibold">{stock.symbol}</span>
+          <span>${stock.price.toFixed(2)}</span>
+          <span
+            className={`flex items-center ${
+              stock.change >= 0 ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {stock.change >= 0 ? <ArrowUp size={12} /> : <ArrowDown size={12} />}
+            {Math.abs(stock.change)}%
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  
+  <style>
+    {`
+      @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-50%); }
+      }
+      .animate-marquee {
+        animation: marquee 60s linear infinite;
+      }
+    `}
+  </style>
+</div>
+  </div>
+
   );
 };
 
 export default StockTicker; 
+
+

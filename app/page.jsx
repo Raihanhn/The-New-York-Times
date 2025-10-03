@@ -16,7 +16,7 @@ export default async function HomePage() {
 
   return (
     <div>
-       <div className="mx-[-20px] my-[-20px]">
+       <div className=" my-[-20px] ">
         <StockTicker />
       </div>
        <div className="mt-10">

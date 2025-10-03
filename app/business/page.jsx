@@ -1,12 +1,49 @@
 "use client";
 
 import Image from "next/image";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function BusinessPage() {
+  const items = [
+    "📈 S&P 500: +1.2%",
+    "💹 Nasdaq: +0.9%",
+    "🏦 Dow Jones: -0.3%",
+    "💰 Bitcoin: +2.5%",
+    "🛢 Oil: -1.1%",
+    "🏠 Real Estate: +0.7%",
+    "📊 Global Trade: +1.8%",
+    "🪙 Ethereum: +3.4%",
+    "📦 Shipping Index: -0.5%",
+    "⚡ Green Energy: +2.1%",
+    "💵 Dollar Index: -0.2%",
+    "🌐 FTSE 100: +0.6%",
+    "🛒 Consumer Goods: +1.0%",
+    "🏗️ Construction: -0.4%",
+    "📉 Tech Stocks: +2.3%",
+  ];
+
+  // Show 10 items at a time
+  const visibleCount = 6;
+  const [startIndex, setStartIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStartIndex((prev) => (prev + 1) % items.length);
+    }, 2500); // flip every 2.5s
+    return () => clearInterval(interval);
+  }, []);
+
+  // Get visible items
+  const visibleItems = [];
+  for (let i = 0; i < visibleCount; i++) {
+    visibleItems.push(items[(startIndex + i) % items.length]);
+  }
+
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
       {/* Market Ticker */}
-      <section className="bg-gray-900 text-white text-sm py-2 px-4 rounded-md mb-6 overflow-x-auto">
+      {/* <section className="bg-gray-900 text-white text-sm py-2 px-4 rounded-md mb-6 overflow-x-auto">
         <div className="flex gap-6 whitespace-nowrap">
           <span>📈 S&P 500: <span className="text-green-400">+1.2%</span></span>
           <span>💹 Nasdaq: <span className="text-green-400">+0.9%</span></span>
@@ -14,12 +51,49 @@ export default function BusinessPage() {
           <span>💰 Bitcoin: <span className="text-green-400">+2.5%</span></span>
           <span>🛢 Oil: <span className="text-red-400">-1.1%</span></span>
         </div>
+      </section> */}
+
+      <section className="bg-gray-900 text-white text-sm py-2 px-4 rounded-md mb-6 overflow-hidden">
+        <div className="flex items-center gap-4 whitespace-nowrap">
+          <span className="font-semibold text-yellow-400">Market Update:</span>
+          <div className="flex gap-4">
+            {visibleItems.map((item, idx) => {
+              // Split the item into label and value
+              const parts = item.split(":");
+              const label = parts[0] + ":"; // e.g., "📈 S&P 500:"
+              const value = parts[1]?.trim(); // e.g., "+1.2%"
+
+              // Determine color
+              const colorClass = value?.startsWith("+")
+                ? "text-green-400"
+                : value?.startsWith("-")
+                ? "text-red-500"
+                : "text-white";
+
+              return (
+                <AnimatePresence key={idx} mode="wait">
+                  <motion.div
+                    key={item + startIndex}
+                    initial={{ rotateX: 90, opacity: 0 }}
+                    animate={{ rotateX: 0, opacity: 1 }}
+                    exit={{ rotateX: -90, opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="inline-block"
+                  >
+                    <span>{label} </span>
+                    <span className={colorClass}>{value}</span>
+                  </motion.div>
+                </AnimatePresence>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
       {/* Page Title */}
-      <h1 className="text-3xl md:text-4xl font-bold mb-8 border-b pb-3">
+      <h1 className="text-3xl md:text-4xl font-bold mb-8 border-b pb-3 text-center">
         Business News
-      </h1> 
+      </h1>
 
       {/* Hero Feature */}
       <section className="relative h-80 md:h-[450px] mb-12 rounded-xl overflow-hidden">
@@ -29,7 +103,7 @@ export default function BusinessPage() {
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/40 bg-opacity-50 flex items-center justify-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white text-center max-w-2xl">
             Global Markets Rally Amid Tech Sector Boom
           </h2>
