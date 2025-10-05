@@ -81,24 +81,25 @@ const layouts = [
   ),
 
   // Layout 4: Small inline image
-  ({ article }) => (
-    <div className="flex items-center gap-4 border rounded-lg p-3 shadow">
-      {article.image && (
-        <img
-          src={article.image}
-          alt={article.title}
-          className="w-20 h-20 object-cover rounded"
-        />
-      )}
-      <div>
-        <h3 className="font-bold">{article.title}</h3>
-        <p className="text-xs text-gray-500">{article.content.slice(0, 60)}...</p>
-        <Link href={`/articles/${article._id}`} className="text-blue-500 mt-2 block">
-          Read More →
-        </Link>
-      </div>
+  // Layout 4: Overlay style (like Layout 5)
+({ article }) => (
+  <div className="relative border rounded-lg overflow-hidden shadow">
+    {article.image && (
+      <img
+        src={article.image}
+        alt={article.title}
+        className="w-full h-48 object-cover"
+      />
+    )}
+    <div className="absolute bottom-0 w-full bg-black/60 text-white p-3">
+      <h3 className="font-bold">{article.title}</h3>
+      <p className="text-sm text-gray-200">{article.content.slice(0, 60)}...</p>
+      <Link href={`/articles/${article._id}`} className="text-blue-400 mt-1 block">
+        Read More →
+      </Link>
     </div>
-  ),
+  </div>
+),
 
   // Layout 5: Overlay bottom
   ({ article }) => (
