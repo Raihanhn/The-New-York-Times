@@ -93,6 +93,9 @@ const layouts = [
       <div>
         <h3 className="font-bold">{article.title}</h3>
         <p className="text-xs text-gray-500">{article.content.slice(0, 60)}...</p>
+        <Link href={`/articles/${article._id}`} className="text-blue-500 mt-2 block">
+          Read More →
+        </Link>
       </div>
     </div>
   ),
@@ -109,6 +112,9 @@ const layouts = [
       )}
       <div className="absolute bottom-0 w-full bg-black/60 text-white p-3">
         <h3 className="font-bold">{article.title}</h3>
+        <Link href={`/articles/${article._id}`} className="text-blue-500 mt-2 block">
+          Read More →
+        </Link>
       </div>
     </div>
   ),
@@ -144,6 +150,9 @@ const layouts = [
       )}
       <div className="p-4">
         <h3 className="text-lg font-bold">{article.title}</h3>
+          <Link href={`/articles/${article._id}`} className="text-blue-500 mt-2 block">
+          Read More →
+        </Link>
       </div>
     </div>
   ),
@@ -160,6 +169,9 @@ const layouts = [
         />
       )}
       <p className="text-sm text-gray-700">{article.content.slice(0, 70)}...</p>
+        <Link href={`/articles/${article._id}`} className="text-blue-500 mt-2 block">
+          Read More →
+        </Link>
     </div>
   ),
 
@@ -168,6 +180,9 @@ const layouts = [
     <div className="border rounded-lg shadow p-6 text-center">
       <h3 className="text-2xl font-bold mb-3">{article.title}</h3>
       <p className="text-gray-600 text-sm">{article.content.slice(0, 120)}...</p>
+        <Link href={`/articles/${article._id}`} className="text-blue-500 mt-2 block">
+          Read More →
+        </Link>
     </div>
   ),
 ];
