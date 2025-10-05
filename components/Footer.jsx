@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="max-w-[1200px] mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Logo / About */}
         <div>
-          <h2 className="text-2xl font-bold mb-3">NYT Clone</h2>
+          <h2 className="text-2xl font-bold mb-3">The New York Times</h2>
           <p className="text-gray-400 text-sm leading-relaxed">
             Bringing you the latest news, articles, and insights with a clean
             and modern experience.

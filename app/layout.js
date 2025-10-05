@@ -3,6 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import '../styles/globals.css'
+import Footer from "@/components/Footer";
 
 export default function RootLayout({ children, session }) {
   return (
@@ -16,9 +17,7 @@ export default function RootLayout({ children, session }) {
           <main style={{ padding: "20px" }}>{children}</main> 
 
           {/* Footer */}
-          <footer style={{ padding: "10px 20px", background: "#f0f0f0", textAlign: "center" }}>
-            &copy; {new Date().getFullYear()} NYT Clone
-          </footer>
+          <Footer/>
         </SessionProvider>
       </body>
     </html>
