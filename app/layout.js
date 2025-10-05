@@ -2,22 +2,25 @@
 
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
-import '../styles/globals.css'
+import "../styles/globals.css";
 import Footer from "@/components/Footer";
 
 export default function RootLayout({ children, session }) {
   return (
     <html lang="en">
-      <body style={{ margin: 0, fontFamily: "Arial, sans-serif" }}>
+      <body className="m-0 font-sans">
         <SessionProvider session={session}>
-          {/* ✅ Navbar is now a separate component */}
-          <Navbar />
+          {/* Full-page flex container */}
+          <div className="flex flex-col min-h-screen">
+            {/* Navbar */}
+            <Navbar />
 
-          {/* Main content */}
-          <main style={{ padding: "20px" }}>{children}</main> 
+            {/* Main content takes remaining space */}
+            <main className="flex-grow p-5">{children}</main>
 
-          {/* Footer */}
-          <Footer/>
+            {/* Footer sticks to bottom */}
+            <Footer />
+          </div>
         </SessionProvider>
       </body>
     </html>

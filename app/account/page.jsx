@@ -9,7 +9,6 @@ export default function AccountPage() {
   const { user, setUser } = useUserStore();
   const [loading, setLoading] = useState(true);
 
-  // Fetch user from backend when session exists
   useEffect(() => {
     const fetchUser = async () => {
       if (session?.user?.email) {
@@ -24,7 +23,7 @@ export default function AccountPage() {
       } else {
         setUser(null);
       }
-      setLoading(false); // ✅ stop loading after fetch
+      setLoading(false);
     };
 
     fetchUser();
@@ -44,13 +43,10 @@ export default function AccountPage() {
       });
 
       const data = await res.json();
-      console.log("🔥 Checkout Response:", data);
-
       if (data?.url) {
-        window.location.href = data.url; // Redirect to LemonSqueezy checkout
+        window.location.href = data.url;
       } else {
-        console.error("Checkout failed:", data);
-        alert("Checkout failed! Check console for details.");
+        alert("Checkout failed! Check console.");
       }
     } catch (err) {
       console.error("Checkout error:", err);
@@ -58,50 +54,68 @@ export default function AccountPage() {
     }
   }
 
-  if (loading) return <p>Loading...</p>;
-  if (!session) return <p>Please log in to view your account.</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-600 text-lg animate-pulse">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="flex items-center justify-center h-20 ">
+        <p className="text-center text-lg text-gray-700 bg-gray-100 px-6 py-4 rounded-lg shadow-md">
+          Please log in to view your account.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-      <h2>Account Info</h2>
-      <img
-        src={user?.image}
-        alt={user?.name}
-        style={{ width: "80px", borderRadius: "50%" }}
-      />
-      <p><strong>Name:</strong> {user?.name}</p>
-      <p><strong>Email:</strong> {user?.email}</p>
-      <p><strong>Subscription:</strong> {user?.subscriptionStatus}</p>
+    <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Account Information
+        </h2>
+        <div className="flex flex-col items-center gap-4">
+          <img
+            src={user?.image}
+            alt={user?.name}
+            className="w-20 h-20 rounded-full shadow-md" 
+          />
+          <div className="text-center">
+            <p className="text-gray-700">
+              <span className="font-semibold">Name:</span> {user?.name}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-semibold">Email:</span> {user?.email}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-semibold">Subscription:</span>{" "}
+              {user?.subscriptionStatus}
+            </p>
+          </div>
+        </div>
 
-      {user?.subscriptionStatus !== "active" && (
-        <button
-          style={{
-            padding: "10px 20px",
-            background: "#1a1a1a",
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-            marginTop: "15px",
-          }}
-          onClick={handleSubscribe}
-        >
-          Subscribe Now
-        </button>
-      )}
-
-      <button
-        style={{
-          padding: "10px 20px",
-          background: "#e63946",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-          marginTop: "15px",
-        }}
-        onClick={() => signOut({ callbackUrl: "/" })}
-      >
-        Logout
-      </button>
+        {/* Buttons */}
+        <div className="mt-6 flex flex-col gap-3">
+          {user?.subscriptionStatus !== "active" && (
+            <button
+              onClick={handleSubscribe}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition"
+            >
+              Subscribe Now
+            </button>
+          )}
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
