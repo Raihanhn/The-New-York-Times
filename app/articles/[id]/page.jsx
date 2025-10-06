@@ -11,10 +11,10 @@ export async function generateStaticParams() {
     id: article._id.toString(),
   }));
 }
-
+ 
 export default async function ArticlePage({ params }) {
   // ✅ params is async → must await
-  const { id } = await params;
+  const { id } =  params;
 
   if (!isValidObjectId(id)) return <p>Invalid Article ID</p>;
 
