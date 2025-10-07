@@ -17,17 +17,38 @@ export default async function handler(req, res) {
       LEMON_SQUEEZY_VARIANT_ID,
     } = process.env;
 
-    if (!LEMON_SQUEEZY_API_KEY || !LEMON_SQUEEZY_STORE_ID || !LEMON_SQUEEZY_VARIANT_ID) {
-      return res.status(500).json({ error: "Missing LemonSqueezy environment variables" });
+    if (
+      !LEMON_SQUEEZY_API_KEY ||
+      !LEMON_SQUEEZY_STORE_ID ||
+      !LEMON_SQUEEZY_VARIANT_ID
+    ) {
+      return res
+        .status(500)
+        .json({ error: "Missing LemonSqueezy environment variables" });
     }
 
+    // Prepare the checkout request body
     const body = {
       data: {
         type: "checkouts",
         attributes: {
-          checkout_data: { email }, // use email from frontend
+          checkout_data: { email }, // keep email here
+          product_options: {
+            redirect_url: `${process.env.NEXT_PUBLIC_BASE_URL}/`, // redirect after success
+            receipt_button_text: "Go to your account", 
+          },
+          checkout_options: {
+            embed: false,
+            media: true,
+            logo: true,
+            desc: true,
+            discount: true,
+            skip_trial: false,
+            subscription_preview: true,
+            button_color: "#7047EB", // Example color
+          },
         },
-        relationships: { 
+        relationships: {
           store: {
             data: { type: "stores", id: String(LEMON_SQUEEZY_STORE_ID) },
           },
@@ -38,6 +59,7 @@ export default async function handler(req, res) {
       },
     };
 
+    // Make the API request to create the checkout
     const response = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
       method: "POST",
       headers: {
