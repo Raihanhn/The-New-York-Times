@@ -3,14 +3,14 @@ import GoogleProvider from "next-auth/providers/google";
 import dbConnect from "../../../lib/dbConnect";
 import User from "../../../models/User";
 
-export default NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
-          prompt: "select_account", // force account chooser
+          prompt: "select_account",
           access_type: "offline",
           response_type: "code",
         },
@@ -22,34 +22,34 @@ export default NextAuth({
     strategy: "jwt",
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, profile }) {
       try {
         await dbConnect();
 
-        // Use googleId from profile
-        const googleId = profile?.sub || null;
+        const googleId = profile?.sub;
+        if (!googleId) return false;
 
-        if (!googleId) {
-          console.error("Google profile ID missing!");
-          return false;
-        }
-
-        // Check if user already exists with this googleId
         let existingUser = await User.findOne({ googleId });
 
         if (!existingUser) {
-          // Create new user
-          existingUser = await User.create({
-            name: user.name,
-            email: user.email,
-            image: user.image,
-            googleId: googleId,
-            subscriptionStatus: "free",
-          });
+          existingUser = await User.findOne({ email: user.email });
+          if (existingUser) {
+            existingUser.googleId = googleId;
+            await existingUser.save();
+          } else {
+            existingUser = await User.create({
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              googleId,
+              subscriptionStatus: "free",
+              isAdmin: false, // default
+            });
+          }
         }
 
-        // Attach user id to token in JWT callback
         user.id = existingUser._id.toString();
+        user.isAdmin = existingUser.isAdmin;
 
         return true;
       } catch (err) {
@@ -57,15 +57,21 @@ export default NextAuth({
         return false;
       }
     },
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.isAdmin = user.isAdmin;
       }
       return token;
     },
+
     async session({ session, token }) {
       session.user.id = token.id;
+      session.user.isAdmin = token.isAdmin;
       return session;
     },
   },
-});
+};
+
+export default NextAuth(authOptions);
