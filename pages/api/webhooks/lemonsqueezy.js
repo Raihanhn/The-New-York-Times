@@ -4,55 +4,55 @@ import User from "../../../models/User";
 
 export const config = {
   api: {
-    bodyParser: false, // Raw body required for webhook
+    bodyParser: false, // Required for raw webhook body
   },
 };
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).end("Method not allowed");
+    return res.status(405).end("Method not allowed"); 
   }
 
   try {
     const rawBody = (await buffer(req)).toString();
     const event = JSON.parse(rawBody);
 
-    console.log("Webhook received:", event.meta?.event_name);
+    console.log("🧩 Webhook Event:", event.meta?.event_name);
+    console.log("📦 Full Event Data:", JSON.stringify(event, null, 2));
 
-    // Connect to MongoDB
     await dbConnect();
 
-    // Handle subscription creation
-    if (event.meta?.event_name === "subscription_created") {
-      const email = event.data.attributes.user_email;
-      if (email) {
-        const user = await User.findOne({ email });
-        if (user) {
-          user.subscribed = true;
-          await user.save();
-          console.log("✅ User subscription updated:", email);
-        } else {
-          console.log("⚠️ User not found:", email);
-        }
-      }
+    const eventName = event.meta?.event_name;
+    const email = event.data?.attributes?.user_email;
+
+    if (!email) {
+      console.log("⚠️ Missing user email in webhook payload");
+      return res.status(400).json({ error: "Missing user email" });
     }
 
-    // Handle subscription cancellation if needed
-    if (event.meta?.event_name === "subscription_cancelled") {
-      const email = event.data.attributes.user_email;
-      if (email) {
-        const user = await User.findOne({ email });
-        if (user) {
-          user.subscribed = false;
-          await user.save();
-          console.log("❌ User subscription cancelled:", email);
-        }
-      }
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.log("⚠️ No user found for:", email);
+      return res.status(404).json({ error: "User not found" });
     }
 
-    res.status(200).json({ received: true });
+    // ✅ Handle subscription or order creation
+    if (["subscription_created", "order_created"].includes(eventName)) {
+      user.subscriptionStatus = "active";
+      await user.save();
+      console.log("✅ Subscription activated for:", email);
+    }
+
+    // ❌ Handle cancellations or expirations
+    if (["subscription_cancelled", "subscription_expired"].includes(eventName)) {
+      user.subscriptionStatus = "free";
+      await user.save();
+      console.log("❌ Subscription cancelled for:", email);
+    }
+
+    res.status(200).json({ success: true });
   } catch (err) {
-    console.error("Webhook error:", err);
+    console.error("🚨 Webhook error:", err);
     res.status(400).send("Webhook error");
   }
 }
