@@ -1,58 +1,80 @@
-import { buffer } from "micro";
-import dbConnect from "../../../lib/dbConnect";
-import User from "../../../models/User";
+import crypto from "crypto";
+import dbConnect from "@/lib/dbConnect";
+import User from "@/models/User";
 
 export const config = {
   api: {
-    bodyParser: false, // Required for raw webhook body
+    bodyParser: false, // important for raw body verification
   },
 };
 
+async function buffer(readable) {
+  const chunks = [];
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+  return Buffer.concat(chunks);
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).end("Method not allowed"); 
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const rawBody = await buffer(req);
+  const signature = req.headers["x-signature"];
+  const secret = process.env.LEMON_SQUEEZY_WEBHOOK_SIGNATURE;
+
+  // Verify the webhook signature
+  const hmac = crypto.createHmac("sha256", secret);
+  hmac.update(rawBody);
+  const digest = hmac.digest("hex");
+
+  if (digest !== signature) {
+    console.error("Invalid Lemon Squeezy signature");
+    return res.status(400).json({ error: "Invalid signature" });
+  }
+
+  // Parse the verified body
+  let event;
   try {
-    const rawBody = (await buffer(req)).toString();
-    const event = JSON.parse(rawBody);
+    event = JSON.parse(rawBody.toString());
+  } catch (error) {
+    console.error("Webhook JSON parse error:", error);
+    return res.status(400).json({ error: "Invalid JSON" });
+  }
 
-    console.log("🧩 Webhook Event:", event.meta?.event_name);
-    console.log("📦 Full Event Data:", JSON.stringify(event, null, 2));
+  const eventType = event.meta?.event_name;
+  console.log("🔔 Lemon Squeezy event:", eventType);
 
+  try {
     await dbConnect();
 
-    const eventName = event.meta?.event_name;
-    const email = event.data?.attributes?.user_email;
+    const customerEmail = event.data?.attributes?.user_email;
+    const subscriptionStatus = event.data?.attributes?.status || "inactive";
 
-    if (!email) {
-      console.log("⚠️ Missing user email in webhook payload");
+    if (!customerEmail) {
+      console.warn("No email found in event data");
       return res.status(400).json({ error: "Missing user email" });
     }
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      console.log("⚠️ No user found for:", email);
+    // Update the user’s subscription in MongoDB
+    const updatedUser = await User.findOneAndUpdate(
+      { email: customerEmail },
+      { subscriptionStatus },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      console.warn("User not found:", customerEmail);
       return res.status(404).json({ error: "User not found" });
     }
 
-    // ✅ Handle subscription or order creation
-    if (["subscription_created", "order_created"].includes(eventName)) {
-      user.subscriptionStatus = "active";
-      await user.save();
-      console.log("✅ Subscription activated for:", email);
-    }
+    console.log("✅ Subscription updated:", updatedUser.email, subscriptionStatus);
 
-    // ❌ Handle cancellations or expirations
-    if (["subscription_cancelled", "subscription_expired"].includes(eventName)) {
-      user.subscriptionStatus = "free";
-      await user.save();
-      console.log("❌ Subscription cancelled for:", email);
-    }
-
-    res.status(200).json({ success: true });
-  } catch (err) {
-    console.error("🚨 Webhook error:", err);
-    res.status(400).send("Webhook error");
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Webhook error:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
