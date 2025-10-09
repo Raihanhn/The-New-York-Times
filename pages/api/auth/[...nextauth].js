@@ -63,12 +63,17 @@ export const authOptions = {
         token.id = user.id;
         token.isAdmin = user.isAdmin;
       }
+      // 🔹 Fetch latest subscriptionStatus from DB
+      const dbUser = await User.findById(token.id).select("subscriptionStatus");
+      if (dbUser) token.subscriptionStatus = dbUser.subscriptionStatus;
+
       return token;
     },
 
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.isAdmin = token.isAdmin;
+      session.user.subscriptionStatus = token.subscriptionStatus || "free";
       return session;
     },
   },
