@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import PaywallCTA from "../../../components/PaywallCTA";
 import dbConnect from "../../../lib/dbConnect";
 import Article from "../../../models/Article";
