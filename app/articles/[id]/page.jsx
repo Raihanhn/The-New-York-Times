@@ -18,8 +18,21 @@ export default async function ArticlePage({ params }) {
   const subscriptionStatus = session?.user?.subscriptionStatus || "free";
 
   return (
-    <div className="max-w-3xl mx-auto py-6">
-      <h2 className="text-3xl font-bold mb-4">{article.title}</h2>
+    <div className="max-w-3xl mx-auto py-6 px-4">
+
+        {/* ✅ Article Image (centered) */}
+      {article.image && (
+        <div className="flex justify-center mb-6">
+          <img
+            src={article.image}
+            alt={article.title}
+            className="rounded-lg max-h-[400px] w-auto object-cover shadow"
+          />
+        </div>
+      )}
+
+
+      <h2 className="text-3xl font-bold mb-4 text-center ">{article.title}</h2>
 
       {article.isPremium && subscriptionStatus !== "active" ? (
         <PaywallCTA />
