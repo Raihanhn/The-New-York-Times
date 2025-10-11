@@ -12,7 +12,7 @@ export default function ArticleCard({ article }) {
   };
 
   return (
-    <div className="relative w-full border rounded-lg overflow-hidden shadow hover:scale-[1.01] transition-transform">
+    <div className="relative w-full border  rounded-lg overflow-hidden shadow hover:scale-[1.01] transition-transform">
       {article.image && (
         <img
           src={article.image}

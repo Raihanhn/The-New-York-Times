@@ -103,7 +103,7 @@ export default function AccountPage() {
           {user?.subscriptionStatus !== "active" && (
             <button
               onClick={handleSubscribe}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition"
+              className="w-full bg-[#21AFF0] hover:bg-[#1b9dd8] text-white py-2 px-4 rounded-lg transition"
             >
               Subscribe Now
             </button>
